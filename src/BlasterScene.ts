@@ -3,7 +3,16 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export default class BlasterScene extends THREE.Scene
 {
+	private readonly camera: THREE.PerspectiveCamera    
+
     private readonly gltfLoader = new GLTFLoader()
+
+	constructor(camera: THREE.PerspectiveCamera)
+	{
+		super()
+
+		this.camera = camera
+	}
 
     async initialize()
     {
@@ -14,9 +23,6 @@ export default class BlasterScene extends THREE.Scene
             canvas: document.getElementById('app') as HTMLCanvasElement
         });
         renderer.setSize(width, height);
-
-        const mainCamera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
-        this.add(mainCamera);
 
         // create the 4 targets
         const t1 = await this.createTarget()
@@ -37,19 +43,15 @@ export default class BlasterScene extends THREE.Scene
 
         this.add(t1, t2, t3, t4)
 
-       const blaster = await this.createBlaster()
-       blaster.position.z = -1
-       this.add(blaster)
- 
 
+        this.camera.position.z = 1
+	    this.camera.position.y = 0.5
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
         dirLight.position.set(0, 3, 2)
 
         const ambientLight = new THREE.AmbientLight(0x404040, 1);
         this.add(dirLight, ambientLight);
-
-        renderer.render(this, mainCamera);
     }
 
     update() {
