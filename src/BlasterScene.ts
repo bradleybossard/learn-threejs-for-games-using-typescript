@@ -1,10 +1,12 @@
 import * as THREE from 'three'
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export default class BlasterScene extends THREE.Scene
 {
-	initialize()
-	{
+    private readonly gltfLoader = new GLTFLoader()
+
+    async initialize()
+    {
         const width = window.innerWidth;
         const height = window.innerHeight;
 
@@ -16,21 +18,43 @@ export default class BlasterScene extends THREE.Scene
         const mainCamera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
         this.add(mainCamera);
 
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        // create the 4 targets
+        const t1 = await this.createTarget()
+        t1.position.x = 0
+        t1.position.z = -3
 
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.set(0, 1, -5);
-        this.add(cube);
+        const t2 = await this.createTarget()
+        t2.position.x = 1
+        t2.position.z = -3
 
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(1, 1, 1);
-        this.add(light);
+        const t3 = await this.createTarget()
+        t3.position.x = 2
+        t3.position.z = -3
+
+        const t4 = await this.createTarget()
+        t4.position.x = -2
+        t4.position.z = -3
+
+        this.add(t1, t2, t3, t4)
+
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(0, 3, 2)
 
         renderer.render(this, mainCamera);
     }
 
     update() {
-        
+
     }
+
+    private async createTarget()
+    {
+        const targetGltf = await this.gltfLoader.loadAsync('assets/target-small.glb')
+
+        targetGltf.scene.rotateY(Math.PI * 0.5)
+
+        return targetGltf.scene;
+    }
+
 }
