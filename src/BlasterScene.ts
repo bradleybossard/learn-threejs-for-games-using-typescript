@@ -37,6 +37,11 @@ export default class BlasterScene extends THREE.Scene
 
         this.add(t1, t2, t3, t4)
 
+       const blaster = await this.createBlaster()
+       blaster.position.z = -1
+       this.add(blaster)
+ 
+
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
         dirLight.position.set(0, 3, 2)
@@ -58,6 +63,13 @@ export default class BlasterScene extends THREE.Scene
         targetGltf.scene.rotateY(Math.PI * 0.5)
 
         return targetGltf.scene;
+    }
+
+    private async createBlaster()
+    {
+        const blasterGltf = await this.gltfLoader.loadAsync('assets/blaster-a.glb')
+
+        return blasterGltf.scene;
     }
 
 }
