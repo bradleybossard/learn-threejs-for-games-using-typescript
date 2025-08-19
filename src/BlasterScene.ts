@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import Bullet from "./Bullet";
 
 export default class BlasterScene extends THREE.Scene {
   private readonly camera: THREE.PerspectiveCamera;
@@ -11,6 +12,8 @@ export default class BlasterScene extends THREE.Scene {
   private blaster?: THREE.Group;
 
   private directionVector = new THREE.Vector3();
+
+  private bullets: Bullet[] = [];
 
   constructor(camera: THREE.PerspectiveCamera) {
     super();
@@ -126,6 +129,7 @@ export default class BlasterScene extends THREE.Scene {
 
   update() {
     this.updateInput();
+    this.updateBullets();
   }
 
   private async createTarget() {
@@ -172,5 +176,27 @@ export default class BlasterScene extends THREE.Scene {
     bulletGltf.scene.rotation.copy(this.blaster.rotation);
 
     this.add(bulletGltf.scene);
+
+    const b = new Bullet(bulletGltf.scene);
+    b.setVelocity(
+      this.directionVector.x * 0.2,
+      this.directionVector.y * 0.2,
+      this.directionVector.z * 0.2
+    );
+
+    this.bullets.push(b);
+  }
+
+  private updateBullets() {
+    for (let i = 0; i < this.bullets.length; ++i) {
+      const b = this.bullets[i];
+      b.update();
+
+      if (b.shouldRemove) {
+        this.remove(b.group);
+        this.bullets.splice(i, 1);
+        i--;
+      }
+    }
   }
 }
