@@ -43,6 +43,11 @@ export default class BlasterScene extends THREE.Scene
 
         this.add(t1, t2, t3, t4)
 
+        const blaster = await this.createBlaster()
+        blaster.position.z = -1
+        this.add(blaster)
+ 
+        blaster.add(this.camera)
 
         this.camera.position.z = 1
 	    this.camera.position.y = 0.5
