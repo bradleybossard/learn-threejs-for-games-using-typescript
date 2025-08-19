@@ -29,4 +29,8 @@ export default class BlasterScene extends THREE.Scene
 
         renderer.render(this, mainCamera);
     }
+
+    update() {
+        
+    }
 }

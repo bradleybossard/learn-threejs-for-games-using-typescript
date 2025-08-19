@@ -16,3 +16,12 @@ scene.initialize()
 
 
 renderer.render(scene, mainCamera)
+
+function tick()
+{
+	scene.update()
+	renderer.render(scene, mainCamera)
+	requestAnimationFrame(tick)
+}
+
+tick()
