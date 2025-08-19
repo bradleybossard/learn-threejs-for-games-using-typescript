@@ -41,6 +41,9 @@ export default class BlasterScene extends THREE.Scene
         const dirLight = new THREE.DirectionalLight(0xffffff, 1);
         dirLight.position.set(0, 3, 2)
 
+        const ambientLight = new THREE.AmbientLight(0x404040, 1);
+        this.add(dirLight, ambientLight);
+
         renderer.render(this, mainCamera);
     }
 
