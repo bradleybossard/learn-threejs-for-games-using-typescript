@@ -7,6 +7,8 @@ export default class BlasterScene extends THREE.Scene
 
     private readonly gltfLoader = new GLTFLoader()
 
+    private readonly keyDown = new Set<string>()
+
     constructor(camera: THREE.PerspectiveCamera)
     {
         super()
@@ -58,6 +60,16 @@ export default class BlasterScene extends THREE.Scene
         const ambientLight = new THREE.AmbientLight(0x404040, 1);
         this.add(dirLight, ambientLight);
 
+        document.addEventListener('keydown', this.handleKeyDown)
+        document.addEventListener('keyup', this.handleKeyUp)
+    }
+
+    private handleKeyDown = (event: KeyboardEvent) => {
+        this.keyDown.add(event.key.toLowerCase())
+    }
+
+    private handleKeyUp = (event: KeyboardEvent) => {
+        this.keyDown.delete(event.key.toLowerCase())
     }
 
 
@@ -81,4 +93,4 @@ export default class BlasterScene extends THREE.Scene
         return blasterGltf.scene;
     }
 
-}
+}P
