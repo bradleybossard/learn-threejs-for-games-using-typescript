@@ -1,27 +1,25 @@
-import * as THREE from 'three';
-import BlasterScene from './BlasterScene';
+import * as THREE from "three";
+import BlasterScene from "./BlasterScene";
 
-const width = window.innerWidth
-const height = window.innerHeight
+const width = window.innerWidth;
+const height = window.innerHeight;
 
 const renderer = new THREE.WebGLRenderer({
-	canvas: document.getElementById('app') as HTMLCanvasElement
-})
-renderer.setSize(width, height)
+  canvas: document.getElementById("app") as HTMLCanvasElement,
+});
+renderer.setSize(width, height);
 
-const mainCamera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100)
+const mainCamera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
 
-const scene = new BlasterScene(mainCamera)
-scene.initialize()
+const scene = new BlasterScene(mainCamera);
+scene.initialize();
 
+renderer.render(scene, mainCamera);
 
-renderer.render(scene, mainCamera)
-
-function tick()
-{
-	scene.update()
-	renderer.render(scene, mainCamera)
-	requestAnimationFrame(tick)
+function tick() {
+  scene.update();
+  renderer.render(scene, mainCamera);
+  requestAnimationFrame(tick);
 }
 
-tick()
+tick();

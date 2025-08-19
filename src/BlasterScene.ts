@@ -1,96 +1,89 @@
-import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-export default class BlasterScene extends THREE.Scene
-{
-    private readonly camera: THREE.PerspectiveCamera    
+export default class BlasterScene extends THREE.Scene {
+  private readonly camera: THREE.PerspectiveCamera;
 
-    private readonly gltfLoader = new GLTFLoader()
+  private readonly gltfLoader = new GLTFLoader();
 
-    private readonly keyDown = new Set<string>()
+  private readonly keyDown = new Set<string>();
 
-    constructor(camera: THREE.PerspectiveCamera)
-    {
-        super()
+  constructor(camera: THREE.PerspectiveCamera) {
+    super();
 
-        this.camera = camera
-    }
+    this.camera = camera;
+  }
 
-    async initialize()
-    {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+  async initialize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-        const renderer = new THREE.WebGLRenderer({
-            canvas: document.getElementById('app') as HTMLCanvasElement
-        });
-        renderer.setSize(width, height);
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.getElementById("app") as HTMLCanvasElement,
+    });
+    renderer.setSize(width, height);
 
-        // create the 4 targets
-        const t1 = await this.createTarget()
-        t1.position.x = 0
-        t1.position.z = -3
+    // create the 4 targets
+    const t1 = await this.createTarget();
+    t1.position.x = 0;
+    t1.position.z = -3;
 
-        const t2 = await this.createTarget()
-        t2.position.x = 1
-        t2.position.z = -3
+    const t2 = await this.createTarget();
+    t2.position.x = 1;
+    t2.position.z = -3;
 
-        const t3 = await this.createTarget()
-        t3.position.x = 2
-        t3.position.z = -3
+    const t3 = await this.createTarget();
+    t3.position.x = 2;
+    t3.position.z = -3;
 
-        const t4 = await this.createTarget()
-        t4.position.x = -2
-        t4.position.z = -3
+    const t4 = await this.createTarget();
+    t4.position.x = -2;
+    t4.position.z = -3;
 
-        this.add(t1, t2, t3, t4)
+    this.add(t1, t2, t3, t4);
 
-        const blaster = await this.createBlaster()
-        blaster.position.z = -1
-        this.add(blaster)
- 
-        blaster.add(this.camera)
+    const blaster = await this.createBlaster();
+    blaster.position.z = -1;
+    this.add(blaster);
 
-        this.camera.position.z = 1
-        this.camera.position.y = 0.5
+    blaster.add(this.camera);
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(0, 3, 2)
+    this.camera.position.z = 1;
+    this.camera.position.y = 0.5;
 
-        const ambientLight = new THREE.AmbientLight(0x404040, 1);
-        this.add(dirLight, ambientLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(0, 3, 2);
 
-        document.addEventListener('keydown', this.handleKeyDown)
-        document.addEventListener('keyup', this.handleKeyUp)
-    }
+    const ambientLight = new THREE.AmbientLight(0x404040, 1);
+    this.add(dirLight, ambientLight);
 
-    private handleKeyDown = (event: KeyboardEvent) => {
-        this.keyDown.add(event.key.toLowerCase())
-    }
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
+  }
 
-    private handleKeyUp = (event: KeyboardEvent) => {
-        this.keyDown.delete(event.key.toLowerCase())
-    }
+  private handleKeyDown = (event: KeyboardEvent) => {
+    this.keyDown.add(event.key.toLowerCase());
+  };
 
+  private handleKeyUp = (event: KeyboardEvent) => {
+    this.keyDown.delete(event.key.toLowerCase());
+  };
 
-    update() {
+  update() {}
 
-    }
+  private async createTarget() {
+    const targetGltf = await this.gltfLoader.loadAsync(
+      "assets/target-small.glb"
+    );
 
-    private async createTarget()
-    {
-        const targetGltf = await this.gltfLoader.loadAsync('assets/target-small.glb')
+    targetGltf.scene.rotateY(Math.PI * 0.5);
 
-        targetGltf.scene.rotateY(Math.PI * 0.5)
+    return targetGltf.scene;
+  }
 
-        return targetGltf.scene;
-    }
+  private async createBlaster() {
+    const blasterGltf = await this.gltfLoader.loadAsync("assets/blaster-a.glb");
 
-    private async createBlaster()
-    {
-        const blasterGltf = await this.gltfLoader.loadAsync('assets/blaster-a.glb')
-
-        return blasterGltf.scene;
-    }
-
-}P
+    return blasterGltf.scene;
+  }
+}
