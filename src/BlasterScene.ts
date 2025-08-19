@@ -71,6 +71,10 @@ export default class BlasterScene extends THREE.Scene {
 
   private handleKeyUp = (event: KeyboardEvent) => {
     this.keyDown.delete(event.key.toLowerCase());
+
+    if (event.key === " ") {
+      this.createBullet();
+    }
   };
 
   private updateInput() {
@@ -138,5 +142,35 @@ export default class BlasterScene extends THREE.Scene {
     const blasterGltf = await this.gltfLoader.loadAsync("assets/blaster-a.glb");
 
     return blasterGltf.scene;
+  }
+
+  private async createBullet() {
+    if (!this.blaster) {
+      return;
+    }
+
+    const bulletGltf = await this.gltfLoader.loadAsync(
+      "assets/bullet-foam.glb"
+    );
+
+    this.camera.getWorldDirection(this.directionVector);
+
+    const aabb = new THREE.Box3().setFromObject(this.blaster);
+    const size = aabb.getSize(new THREE.Vector3());
+
+    const vec = this.blaster.position.clone();
+    vec.y += 0.06;
+
+    bulletGltf.scene.position.add(
+      vec.add(this.directionVector.clone().multiplyScalar(size.z * 0.5))
+    );
+
+    // rotate children to match gun for simplicity
+    bulletGltf.scene.children.forEach((child) => child.rotateX(Math.PI * -0.5));
+
+    // use the same rotation as as the gun
+    bulletGltf.scene.rotation.copy(this.blaster.rotation);
+
+    this.add(bulletGltf.scene);
   }
 }
